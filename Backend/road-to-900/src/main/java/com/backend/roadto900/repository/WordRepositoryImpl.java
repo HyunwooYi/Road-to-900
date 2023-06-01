@@ -2,12 +2,10 @@ package com.backend.roadto900.repository;
 
 import com.backend.roadto900.dto.WordAddDto;
 import com.backend.roadto900.dto.WordDto;
-import com.backend.roadto900.req.WordAddDeleteReq;
 import com.backend.roadto900.req.WordAskReq;
 import com.backend.roadto900.req.WordDeleteReq;
 import com.backend.roadto900.req.WordInsertReq;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.relational.core.sql.In;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
@@ -63,9 +61,10 @@ public class WordRepositoryImpl implements WordRepository{
     }
 
     @Override
-    public List<WordDto> deleteWord(WordDeleteReq deleteWordReq) {
+    public String deleteWord(WordDeleteReq deleteWordReq) {
         jdbcTemplate.update("DELETE FROM WORD WHERE word_id= ?", deleteWordReq.getWordId());
-        return findAll();
+        return "단어 삭제가 완료 되었습니다.";
+
     }
 
     @Override
@@ -87,16 +86,11 @@ public class WordRepositoryImpl implements WordRepository{
         return wordAddDtoList;
     }
 
-    @Override
-    public List<WordAddDto> deleteAskWord(WordAddDeleteReq wordAddDeleteReq){
-
-//        * 배열로 들어온 값을 가져와서 for문으로 하고 싶은데 안된다.
-        List<Integer> item = wordAddDeleteReq.getWordAddId();
-
-        for (Integer wordId: item) {
-            System.out.println("wordAddId = " + wordId);
+    public String deleteAskWord(List<Integer> wordIdList){
+        for(int wordAddId : wordIdList){
+            System.out.println("wordAddId = " + wordAddId);
+            jdbcTemplate.execute("DELETE FROM word_add WHERE word_add_id=" + wordAddId );
         }
-//      jdbcTemplate.update("DELETE FROM word_add where id = ?", wordAddDeleteReq.getWordAddId()));
-        return findAskWord();
+        return "단어 요청 삭제 완료";
     }
 }
