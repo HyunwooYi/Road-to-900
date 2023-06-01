@@ -29,8 +29,7 @@ public class WordController {
 
     @PostMapping ("/word/create")
     public ResponseEntity insertWord(@RequestBody WordInsertReq wordInsertReq){
-        WordDto wordDto = wordService.insertWord(wordInsertReq);
-        System.out.println(wordDto.getSpell());
+        String wordDto = wordService.insertWord(wordInsertReq);
         return ResponseEntity.status(HttpStatus.CREATED).body(wordDto);
     }
 
@@ -48,7 +47,7 @@ public class WordController {
 
     @PostMapping("/wordAdd")
     public ResponseEntity askWord(@RequestBody WordAskReq wordAskReq){
-        WordDto wordDto = wordService.askWord(wordAskReq);
+        String wordDto = wordService.askWord(wordAskReq);
         return ResponseEntity.status(201).body(wordDto);
     }
 

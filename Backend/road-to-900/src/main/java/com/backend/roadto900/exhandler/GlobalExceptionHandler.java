@@ -24,7 +24,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(HttpMessageNotReadableException.class)
     protected ResponseEntity<String> handleHttpMessageNotReadable(HttpMessageNotReadableException e) {
         Map<String,String> result = new HashMap<>();
-        result.put("ErrorMessage","삭제할 단어를 체크하지 않았습니다.");
+        result.put("ErrorMessage","잘못된 형식의 단어 요청입니다.");
 
         // Convert map to JSON
         String jsonResult = "";
