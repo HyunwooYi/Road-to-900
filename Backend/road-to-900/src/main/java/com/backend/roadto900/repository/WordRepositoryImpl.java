@@ -2,7 +2,11 @@ package com.backend.roadto900.repository;
 
 import com.backend.roadto900.dto.WordAddDto;
 import com.backend.roadto900.dto.WordDto;
+<<<<<<< Updated upstream
 import com.backend.roadto900.req.WordAddDeleteReq;
+=======
+import com.backend.roadto900.dto.WordSpellDto;
+>>>>>>> Stashed changes
 import com.backend.roadto900.req.WordAskReq;
 import com.backend.roadto900.req.WordDeleteReq;
 import com.backend.roadto900.req.WordInsertReq;
@@ -34,6 +38,17 @@ public class WordRepositoryImpl implements WordRepository{
 
     };
 
+    private final RowMapper<WordSpellDto> wordSpellDtoRowMapper = new RowMapper<WordSpellDto>() {
+        @Override
+        public WordSpellDto mapRow(ResultSet rs, int rowNum) throws SQLException {
+            return new WordSpellDto(
+                    rs.getString("spell"),
+                    rs.getString("mean")
+            );
+        }
+
+    };
+
     //word_add 테이블을 위한 RowMapper
     private final RowMapper<WordAddDto> wordAddDtoRowMapper = new RowMapper<WordAddDto>() {
         @Override
@@ -48,13 +63,18 @@ public class WordRepositoryImpl implements WordRepository{
 
 
     @Override
-    public WordDto insertWord(WordInsertReq wordInsertReq) {
+    public String insertWord(WordInsertReq wordInsertReq) {
             String sql = "INSERT INTO word (spell, mean) VALUES (?, ?)";
             jdbcTemplate.update(sql, wordInsertReq.getSpell(), wordInsertReq.getMean());
             WordDto newWordDto = jdbcTemplate.queryForObject("SELECT * FROM word WHERE spell = ? AND mean = ?", new Object[]{wordInsertReq.getSpell(), wordInsertReq.getMean()}, wordRowMapper);
-            return newWordDto;
+            return "Created. 단어 추가 완료";
     }
 
+    @Override
+    public WordSpellDto findBySpell(WordInsertReq wordInsertReq) {
+        List<WordSpellDto> wordSpellDto = jdbcTemplate.query("SELECT * FROM word WHERE spell = ?", new Object[] {wordInsertReq.getSpell()}, wordSpellDtoRowMapper);
+        return wordSpellDto.isEmpty() ? null : wordSpellDto.get(0);
+    }
 
     @Override
     public List<WordDto> findAll() {
@@ -65,7 +85,12 @@ public class WordRepositoryImpl implements WordRepository{
     @Override
     public List<WordDto> deleteWord(WordDeleteReq deleteWordReq) {
         jdbcTemplate.update("DELETE FROM WORD WHERE word_id= ?", deleteWordReq.getWordId());
+<<<<<<< Updated upstream
         return findAll();
+=======
+        return "No Content. 단어 삭제 완료.";
+
+>>>>>>> Stashed changes
     }
 
     @Override
@@ -75,9 +100,9 @@ public class WordRepositoryImpl implements WordRepository{
     }
 
     @Override
-    public WordDto askWord(WordAskReq wordAskReq) {
+    public String askWord(WordAskReq wordAskReq) {
         jdbcTemplate.update("INSERT INTO word_add (word_add_spell) VALUES (?)",wordAskReq.getSpell());
-        return null;
+        return "단어 요청 추가 완료";
     }
 
     @Override

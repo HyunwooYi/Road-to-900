@@ -3,6 +3,7 @@ package com.backend.roadto900.service;
 import com.backend.roadto900.config.NowUser;
 import com.backend.roadto900.dto.WordAddDto;
 import com.backend.roadto900.dto.WordDto;
+import com.backend.roadto900.dto.WordSpellDto;
 import com.backend.roadto900.exception.GeneralException;
 import com.backend.roadto900.exhandler.GlobalExceptionHandler;
 import com.backend.roadto900.repository.WordRepository;
@@ -36,6 +37,7 @@ public class WordService {
 
     }
 
+<<<<<<< Updated upstream
     public WordDto insertWord(WordInsertReq wordInsertReq) {
         List<WordDto> searchResults = wordRepository.searchWord(wordInsertReq.getSpell());
         if (!searchResults.isEmpty()){
@@ -44,6 +46,25 @@ public class WordService {
             throw new GeneralException("단어 글자 수 초과", 404);
         } else if (wordInsertReq.getSpell().length()==0) {
             throw new GeneralException("잘못된 입력 형식, 단어 중복", 404);
+=======
+    public String insertWord(WordInsertReq wordInsertReq) {
+        if ( nowUser.getRole() == -1 ) {
+            throw new GeneralException("단어 추가 권한이 없습니다.", 403);
+        }
+
+        String spelling = wordInsertReq.getSpell();
+
+        if (spelling == null || spelling.isEmpty()){
+            throw new GeneralException("단어를 입력해주세요.", 404);
+        } else if (wordInsertReq.getSpell().length() > 20) {
+            throw new GeneralException("단어 글자 수가 초과되었습니다.", 404);
+        }
+
+        WordSpellDto existSpell = wordRepository.findBySpell(wordInsertReq);
+
+        if (existSpell != null && existSpell.getSpell() != null && existSpell.getSpell().equals(wordInsertReq.getSpell())){
+            throw new GeneralException("단어가 중복되었습니다.", 404);
+>>>>>>> Stashed changes
         }
         return wordRepository.insertWord(wordInsertReq);
     }
@@ -73,6 +94,7 @@ public class WordService {
         return wordList;
     }
 
+<<<<<<< Updated upstream
     public WordDto askWord(WordAskReq wordAskReq) {
         if ( wordAskReq.getSpell().isBlank() ) {
             throw new GeneralException("잘못된 형식의 단어 요청 입력.", 400);
@@ -80,16 +102,32 @@ public class WordService {
             throw new GeneralException("잘못된 입력 형식, 단어 중복", 404);
         } else if (wordAskReq.getSpell().length()==0) {
             throw new GeneralException("잘못된 입력 형식, 단어 중복", 404);
+=======
+    public String askWord(WordAskReq wordAskReq) {
+        if(nowUser.getRole() == -1) {
+            throw new GeneralException("단어 추가 요청 삭제 권한이 없습니다.", 403);
+        } else if ( wordAskReq.getSpell().isBlank() ) {
+            throw new GeneralException("잘못된 형식의 단어 요청을 입력하였습니다.", 400);
+        } else if (wordAskReq.getSpell().length()>20) {
+            throw new GeneralException("단어 글자 수가 초과되었습니다.", 404);
+>>>>>>> Stashed changes
         }
         return wordRepository.askWord(wordAskReq);
     }
 
     public List<WordAddDto> findAskWord() {
         num = (wordRepository.findAskWord()).size();
+<<<<<<< Updated upstream
         if(nowUser.getRole() == -1){
             throw new GeneralException("단어 추가 요청 삭제 권한이 없음", 403);
         }else if ( num == 0 ){
             throw new GeneralException("단어 추가 요청을 조회할 수 없음.", 404);
+=======
+        if(nowUser.getRole() != 1){ // 관리자가 아니면
+            throw new GeneralException("단어 추가 요청 조회할 권한이 없습니다.", 403);
+        } else if ( num == 0 ){
+            throw new GeneralException("단어 추가 요청을 조회할 수 없습니다.", 404);
+>>>>>>> Stashed changes
         }
         return wordRepository.findAskWord();
     }
