@@ -1,6 +1,9 @@
 package com.backend.roadto900.exhandler;
 
 import com.backend.roadto900.exception.GeneralException;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -19,10 +22,6 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(e.getCode()).body(result);
     }
     @ExceptionHandler(HttpMessageNotReadableException.class)
-<<<<<<< Updated upstream
-    protected ResponseEntity<String> handleHttpMessageNotReadable(HttpMessageNotReadableException ex) {
-        return ResponseEntity.badRequest().body("ErrorMessage"+":"+ " 삭제할 단어를 체크하지 않음 "+" Code: 400");
-=======
     protected ResponseEntity<String> handleHttpMessageNotReadable(HttpMessageNotReadableException e) {
         Map<String,String> result = new HashMap<>();
         result.put("ErrorMessage","잘못된 형식의 단어 요청입니다.");
@@ -36,6 +35,6 @@ public class GlobalExceptionHandler {
             ex.printStackTrace();
         }
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(jsonResult);
->>>>>>> Stashed changes
     }
+
 }
